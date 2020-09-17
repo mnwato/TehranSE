@@ -278,7 +278,7 @@ class Share:
 
         return tradehistory
     
-    def gettradedetail(self):
+    def gettransactions(self):
 
         url = "http://tsetmc.com/tsev2/data/TradeDetail.aspx"
         payload = {"i": self.inscode}
