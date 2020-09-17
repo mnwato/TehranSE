@@ -36,26 +36,6 @@ def csvwriter(filename, dictionary):
 
             write.writerow([key] + [value for value in dictionary[key].values()])
 
-def holdertracer(shareholderid):
-
-    from .share import Share
-    from .database import report
-
-    inscodes = report().keys()
-    length = len(list(inscodes))
-    for place, inscode in enumerate(inscodes):
-
-        share = Share(inscode)
-        shareholders = share.getshareholders()
-
-        for holder in shareholders:
-
-            if shareholders[holder]["shareholderid"] == shareholderid:
-
-                print(holder)
-
-        print(f"\r{place+1}/{length}", end="")
-
 if __name__ == "__main__":
 
     pass
