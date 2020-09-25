@@ -145,9 +145,13 @@ class Share:
             htmlfile = htmlfile.text
 
             if self.inscode in freefloats:
+            
                 freefloat = freefloats[self.inscode]
+            
             else:
+            
                 freefloat = findall(r"KAjCapValCpsIdx='(.*?)',", htmlfile)[0].strip()
+            
             eps = findall(r"EstimatedEPS='(.*?)',", htmlfile)[0].strip()
             sectorpe = findall(r"SectorPE='(.*?)',", htmlfile)[0].strip()
 
@@ -228,14 +232,20 @@ class Share:
 
             div = tds[1].find('div')
             if div:
+            
                 sharevalue = int(div.get("title").replace(",", ""))
+            
             else:
+            
                 sharevalue = int(tds[1].string.replace(",", ""))
 
             div = tds[3].find('div')
             if div:
+            
                 change = int(div.get("title").replace(",", ""))
+            
             else:
+            
                 change = int(tds[3].string.replace(",", ""))
 
             shareholders.update({
@@ -291,7 +301,7 @@ class Share:
 
         lasttime = None
         lastvolume = None
-        tradedetail = {}
+        transactions = {}
         for row in xmlfile:
             
             time = row[1].text
@@ -302,12 +312,16 @@ class Share:
                 
                 lastvolume += volume
                 closeprice = price
+                high = transactions[time]["high"]
+                low = transactions[time]["low"]
 
-                tradedetail.update({
+                transactions.update({
                     time: {
                         "volume": lastvolume,
                         "open": openprice,
                         "close": closeprice,
+                        "high": price if price >= high else high,
+                        "low": price if price <= low else low
                     }
                 })
 
@@ -317,16 +331,20 @@ class Share:
                 lastvolume = volume
                 openprice = price
                 closeprice = price
+                high = price
+                low = price
 
-                tradedetail.update({
+                transactions.update({
                     time: {
                         "volume": lastvolume,
                         "open": openprice,
                         "close": closeprice,
+                        "high": high,
+                        "low": low
                     }
                 })
 
-        return tradedetail
+        return transactions
 
 if __name__ == "__main__":
 
