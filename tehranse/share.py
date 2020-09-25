@@ -65,7 +65,7 @@ class Share:
         self.csosecval = tds[25].string
         self.lsosecval = tds[27].string
 
-    def getinst(self):
+    def getinst(self, extra=False):
 
         url = "http://tsetmc.com/tsev2/data/instinfodata.aspx"
         payload = {"i": self.inscode, "c": self.csecval}
@@ -136,32 +136,34 @@ class Share:
                 #"unknown": csvfile[4][9],
             })
 
-        url = "http://tsetmc.com/Loader.aspx"
-        payload = {"ParTree": "151311", "i": self.inscode}
+        if extra:
 
-        htmlfile = session.get(url, params=payload)
-        htmlfile = htmlfile.text
+            url = "http://tsetmc.com/Loader.aspx"
+            payload = {"ParTree": "151311", "i": self.inscode}
 
-        if self.inscode in freefloats:
-            freefloat = freefloats[self.inscode]
-        else:
-            freefloat = findall(r"KAjCapValCpsIdx='(.*?)',", htmlfile)[0].strip()
-        eps = findall(r"EstimatedEPS='(.*?)',", htmlfile)[0].strip()
-        sectorpe = findall(r"SectorPE='(.*?)',", htmlfile)[0].strip()
+            htmlfile = session.get(url, params=payload)
+            htmlfile = htmlfile.text
 
-        inst.update({
-            "bvol": int(findall(r"BaseVol=(.*?),", htmlfile)[0]),
-            "eps": float(eps) if eps else 0,
-            "z": int(findall(r"ZTitad=(.*?),", htmlfile)[0]),
-            "psgelstamax": float(findall(r"PSGelStaMax='(.*?)',", htmlfile)[0]),
-            "psgelstamin": float(findall(r"PSGelStaMin='(.*?)',", htmlfile)[0]),
-            "minweek": float(findall(r"MinWeek='(.*?)',", htmlfile)[0]),
-            "maxweek": float(findall(r"MaxWeek='(.*?)',", htmlfile)[0]),
-            "minyear": float(findall(r"MinYear='(.*?)',", htmlfile)[0]),
-            "maxyear": float(findall(r"MaxYear='(.*?)',", htmlfile)[0]),
-            "sectorpe": float(sectorpe) if sectorpe else 0,
-            "freefloat": float(freefloat) if freefloat else 0, # self naming
-        })
+            if self.inscode in freefloats:
+                freefloat = freefloats[self.inscode]
+            else:
+                freefloat = findall(r"KAjCapValCpsIdx='(.*?)',", htmlfile)[0].strip()
+            eps = findall(r"EstimatedEPS='(.*?)',", htmlfile)[0].strip()
+            sectorpe = findall(r"SectorPE='(.*?)',", htmlfile)[0].strip()
+
+            inst.update({
+                "bvol": int(findall(r"BaseVol=(.*?),", htmlfile)[0]),
+                "eps": float(eps) if eps else 0,
+                "z": int(findall(r"ZTitad=(.*?),", htmlfile)[0]),
+                "psgelstamax": float(findall(r"PSGelStaMax='(.*?)',", htmlfile)[0]),
+                "psgelstamin": float(findall(r"PSGelStaMin='(.*?)',", htmlfile)[0]),
+                "minweek": float(findall(r"MinWeek='(.*?)',", htmlfile)[0]),
+                "maxweek": float(findall(r"MaxWeek='(.*?)',", htmlfile)[0]),
+                "minyear": float(findall(r"MinYear='(.*?)',", htmlfile)[0]),
+                "maxyear": float(findall(r"MaxYear='(.*?)',", htmlfile)[0]),
+                "sectorpe": float(sectorpe) if sectorpe else 0,
+                "freefloat": float(freefloat) if freefloat else 0, # self naming
+            })
 
         return inst
 
@@ -259,10 +261,10 @@ class Share:
         csvfile = csvfile.text.replace("@", ",").replace(";", "\n")
         csvfile = list(reader(StringIO(csvfile)))
 
-        tradehistory = {}
+        pricehistory = {}
         for line in csvfile[day:day+many]:
 
-            tradehistory.update({
+            pricehistory.update({
                 line[0]: {
                     "high": float(line[1]),
                     "low": float(line[2]),
@@ -276,7 +278,7 @@ class Share:
                 }
             })
 
-        return tradehistory
+        return pricehistory
     
     def gettransactions(self):
 
@@ -289,7 +291,6 @@ class Share:
 
         lasttime = None
         lastvolume = None
-        lastprice = None
         tradedetail = {}
         for row in xmlfile:
             
@@ -326,32 +327,6 @@ class Share:
                 })
 
         return tradedetail
-
-class TradeHistory:
-
-    def __init__(self, inscode, date=None):
-
-        self.inscode = inscode
-
-        if not date:
-
-            url = 'http://cdn.tsetmc.com/Loader.aspx'
-            payload = {'partree': '151321', 'i': self.inscode}
-
-            self.cdn = session.get(url, params=payload).text
-
-        else:
-
-            url = "http://cdn.tsetmc.com/Loader.aspx"
-            payload = {"partree": "15131P", "i": self.inscode, "d": date}
-
-            self.cdn = session.get(url, params=payload).text
-
-    def finder(self, find):
-
-        databox = loads(findall(rf"{find}=(.+?);", self.cdn)[0].replace("'", '"'))
-
-        return databox
 
 if __name__ == "__main__":
 
