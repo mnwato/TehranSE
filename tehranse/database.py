@@ -77,7 +77,7 @@ def modify(share, method):
 
         file.write(dumps(shares))
 
-def report():
+def report(sharenames=None, market=None, industry=None, kind=None):
 
     from json import loads, dumps
     from os.path import dirname
@@ -88,7 +88,26 @@ def report():
 
         shares = loads(file.read())
 
-    return shares
+    thereport = list(shares.keys())
+    for inscode, share in shares.items():
+
+        if sharenames and inscode in thereport and share["sharename"].replace("ك", "ک").replace("ي", "ی") not in sharenames:
+
+            thereport.remove(inscode)
+
+        if market and inscode in thereport and share["flow"] not in market:
+
+            thereport.remove(inscode)
+
+        if industry and inscode in thereport and share["csecval"] not in industry:
+
+            thereport.remove(inscode)
+
+        if kind and inscode in thereport and share["yval"] not in kind:
+
+            thereport.remove(inscode)
+
+    return thereport
 
 if __name__ == "__main__":
 
