@@ -81,10 +81,10 @@ class Share:
             "cetaval": csvfile[0][1].strip(), # not sure about name maybe it is "cgdsval"
             "pl": int(csvfile[0][2]),
             "pc": int(csvfile[0][3]),
-            "po": int(csvfile[0][4]),
+            "pf": int(csvfile[0][4]),
             "py": int(csvfile[0][5]),
-            "pd": int(csvfile[0][6]),
-            "pf": int(csvfile[0][7]),
+            #"unknown": int(csvfile[0][6]),
+            #"unknown": int(csvfile[0][7]),
             "tno": int(csvfile[0][8]),
             "tvol": int(csvfile[0][9]),
             "tval": int(csvfile[0][10]),
