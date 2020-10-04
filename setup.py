@@ -25,7 +25,7 @@ TehranSE is trying to solve this problem
 ### Installation
 `pip install tehranse`
 
-### Getting Started
+### Documentation
 see homepage for more information
 
 ### License

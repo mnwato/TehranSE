@@ -8,7 +8,7 @@ TehranSE is trying to solve this problem
 ### Installation
 `pip install tehranse`
 
-### Getting Started
+### Documentation
 for Documentation in Persian see 📔 [virgool](https://virgool.io/@sinamobasheri)
 
 ### License
