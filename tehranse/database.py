@@ -29,13 +29,13 @@ def update():
 
     path = dirname(__file__)
 
-    with open(path+r"\cache\shares.json") as file: 
+    with open(path+"/cache/shares.json") as file: 
 
         shares = loads(file.read())
 
     shares.update(market)
 
-    with open(path+r"\cache\shares.json", "w") as file:
+    with open(path+"/cache/shares.json", "w") as file:
 
         file.write(dumps(shares))
 
@@ -44,13 +44,13 @@ def update():
     jsonfile = get(url, params=payload)
     jsonfile = jsonfile.json()
 
-    with open(path+r"\cache\freefloat.json") as file: 
+    with open(path+"/cache/freefloat.json") as file: 
 
         freefloats = loads(file.read())
 
     freefloats.update(jsonfile)
 
-    with open(path+r"\cache\freefloat.json", "w") as file:
+    with open(path+"/cache/freefloat.json", "w") as file:
 
         file.write(dumps(freefloats))
 
@@ -61,7 +61,7 @@ def modify(share, method):
 
     path = dirname(__file__)
 
-    with open(path+r"\cache\shares.json") as file:
+    with open(path+"/cache/shares.json") as file:
 
         shares = loads(file.read())
 
@@ -73,7 +73,7 @@ def modify(share, method):
 
         shares.update(share)
 
-    with open(path+r"\cache\shares.json", "w") as file:
+    with open(path+"/cache/shares.json", "w") as file:
 
         file.write(dumps(shares))
 
@@ -84,7 +84,7 @@ def report(sharenames=None, market=None, industry=None, kind=None):
 
     path = dirname(__file__)
 
-    with open(path+r"\cache\shares.json") as file:
+    with open(path+"/cache/shares.json") as file:
 
         shares = loads(file.read())
 

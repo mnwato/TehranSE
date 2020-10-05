@@ -30,7 +30,7 @@ def fixorders(orders):
         return orders
 
 path = dirname(__file__)
-with open(path+r"\cache\freefloat.json") as file: 
+with open(path+"/cache/freefloat.json") as file: 
 
     freefloats = loads(file.read())
 
