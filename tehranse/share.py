@@ -290,7 +290,7 @@ class Share:
 
         return pricehistory
     
-    def gettransactions(self):
+    def gettransactions(self, per=None):
 
         url = "http://tsetmc.com/tsev2/data/TradeDetail.aspx"
         payload = {"i": self.inscode}
@@ -299,48 +299,68 @@ class Share:
         xmlfile = xmlfile.text
         xmlfile = ElementTree.fromstring(xmlfile)
 
-        lasttime = None
-        lastvolume = None
         transactions = {}
-        for row in xmlfile:
-            
-            time = row[1].text
-            volume = int(row[2].text)
-            price = float(row[3].text)
 
-            if lasttime == time:
+        if per == "sec":
+
+            lasttime = None
+            lastvolume = None
+            for row in xmlfile:
                 
-                lastvolume += volume
-                closeprice = price
-                high = transactions[time]["high"]
-                low = transactions[time]["low"]
+                time = row[1].text
+                volume = int(row[2].text)
+                price = float(row[3].text)
+
+                if lasttime == time:
+                    
+                    lastvolume += volume
+                    closeprice = price
+                    high = transactions[time]["high"]
+                    low = transactions[time]["low"]
+
+                    transactions.update({
+                        time: {
+                            "volume": lastvolume,
+                            "open": openprice,
+                            "close": closeprice,
+                            "high": price if price >= high else high,
+                            "low": price if price <= low else low
+                        }
+                    })
+
+                else:
+
+                    lasttime = time
+                    lastvolume = volume
+                    openprice = price
+                    closeprice = price
+                    high = price
+                    low = price
+
+                    transactions.update({
+                        time: {
+                            "volume": lastvolume,
+                            "open": openprice,
+                            "close": closeprice,
+                            "high": high,
+                            "low": low
+                        }
+                    })
+        
+        else:
+
+            for row in xmlfile:
+                
+                number = row[0].text
+                time = row[1].text
+                volume = int(row[2].text)
+                price = float(row[3].text)
 
                 transactions.update({
-                    time: {
-                        "volume": lastvolume,
-                        "open": openprice,
-                        "close": closeprice,
-                        "high": price if price >= high else high,
-                        "low": price if price <= low else low
-                    }
-                })
-
-            else:
-
-                lasttime = time
-                lastvolume = volume
-                openprice = price
-                closeprice = price
-                high = price
-                low = price
-
-                transactions.update({
-                    time: {
-                        "volume": lastvolume,
-                        "open": openprice,
-                        "close": closeprice,
-                        "high": high,
-                        "low": low
+                    number: {
+                        "time": time,
+                        "volume": volume,
+                        "price": price
                     }
                 })
 
