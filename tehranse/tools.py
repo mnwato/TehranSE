@@ -43,7 +43,7 @@ def impactindex(market, number):
     from requests import get
 
     url = "http://tsetmc.com/Loader.aspx"
-    payload = {"Partree": "151316", "Flow": number}
+    payload = {"Partree": "151316", "Flow": market}
 
     htmlfile = get(url, params=payload)
     htmlfile = htmlfile.text
