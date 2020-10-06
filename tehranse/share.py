@@ -171,7 +171,7 @@ class Share:
 
         return inst
 
-    def getclientes(self, day=0, many=1):
+    def getclientes(self, number=1):
         
         url = "http://www.tsetmc.com/tsev2/data/clienttype.aspx"
         payload = {"i": self.inscode}
@@ -181,7 +181,7 @@ class Share:
         csvfile = list(reader(StringIO(csvfile)))
 
         clientes = {}
-        for row in csvfile[day:day+many]:
+        for row in csvfile[:number]:
 
             clientes.update({
                 row[0]: {
@@ -262,17 +262,17 @@ class Share:
 
         return shareholders
 
-    def getpricehistory(self, day=0, many=1):
+    def getpricehistory(self, number=1):
 
         url = "http://tsetmc.com/tsev2/data/InstTradeHistory.aspx"
-        payload = { "i": self.inscode, "Top": many, "A": 0}
+        payload = { "i": self.inscode, "Top": number, "A": 0}
 
         csvfile = session.get(url, params=payload)
         csvfile = csvfile.text.replace("@", ",").replace(";", "\n")
         csvfile = list(reader(StringIO(csvfile)))
 
         pricehistory = {}
-        for line in csvfile[day:day+many]:
+        for line in csvfile[:number]:
 
             pricehistory.update({
                 line[0]: {

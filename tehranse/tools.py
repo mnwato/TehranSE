@@ -36,14 +36,14 @@ def csvwriter(filename, dictionary):
 
             write.writerow([key] + [value for value in dictionary[key].values()])
 
-def impactindex(many, flow):
+def impactindex(market, number):
 
     from re import findall
     from bs4 import BeautifulSoup
     from requests import get
 
     url = "http://tsetmc.com/Loader.aspx"
-    payload = {"Partree": "151316", "Flow": flow}
+    payload = {"Partree": "151316", "Flow": number}
 
     htmlfile = get(url, params=payload)
     htmlfile = htmlfile.text
@@ -53,7 +53,7 @@ def impactindex(many, flow):
     trs = tbody.find_all("tr")
 
     pack = {}
-    for tr in trs[:many]:
+    for tr in trs[:number]:
 
         tds = tr.find_all("td")
 
